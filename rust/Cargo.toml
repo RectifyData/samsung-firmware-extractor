@@ -1,0 +1,24 @@
+[package]
+name = "fwx"
+version = "0.1.0"
+edition = "2021"
+description = "Samsung firmware extractor core: finds lz4 images inside firmware containers and writes raw .img files"
+
+[lib]
+name = "fwx"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+anyhow = "1"
+tar = "0.4"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+jni = "0.21"
+
+[dev-dependencies]
+sha2 = "0.10"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+strip = true
