@@ -1,2 +1,15 @@
+# Rust
+rust/target/
+rust/tests/fixtures/
+
+# Android / Gradle
 .gradle/
 build/
+app/build/
+local.properties
+*.iml
+.idea/
+app/src/main/jniLibs/
+
+# Generated
+*.apk
