@@ -2,17 +2,26 @@
 name = "fwx"
 version = "0.1.0"
 edition = "2021"
-description = "Samsung firmware extractor core: finds lz4 images inside firmware containers and writes raw .img files"
+description = "Extracts raw .img files from Samsung firmware (zip / tar.md5 with lz4 images)"
+repository = "https://github.com/RectifyData/samsung-firmware-extractor"
 
 [lib]
 name = "fwx"
 crate-type = ["cdylib", "rlib"]
 
+[[bin]]
+name = "fwx-cli"
+path = "src/bin/fwx-cli.rs"
+
+[features]
+# Android JNI bridge, enabled only by the APK build (cargo ndk ... --features android).
+android = ["dep:jni"]
+
 [dependencies]
 anyhow = "1"
 tar = "0.4"
 zip = { version = "2", default-features = false, features = ["deflate"] }
-jni = "0.21"
+jni = { version = "0.21", optional = true }
 
 [dev-dependencies]
 sha2 = "0.10"
@@ -22,3 +31,15 @@ opt-level = 3
 lto = true
 codegen-units = 1
 strip = true
+
+[package.metadata.deb]
+name = "fwx-cli"
+maintainer = "RectifyData <RectifyData@users.noreply.github.com>"
+section = "utils"
+priority = "optional"
+extended-description = "Command-line tool that extracts raw .img files from Samsung firmware packages (zip and tar.md5 containing lz4 images). Converts Android sparse images to raw automatically."
+assets = [
+    ["target/release/fwx-cli", "usr/bin/", "755"],
+    ["../README.md", "usr/share/doc/fwx-cli/README.md", "644"],
+]
+depends = "$auto"
