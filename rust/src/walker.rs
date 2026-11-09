@@ -1,5 +1,5 @@
 use anyhow::{bail, Context, Result};
-use std::io::{Read, Seek};
+use std::io::{Read, Seek, SeekFrom};
 use std::sync::atomic::{AtomicBool, Ordering};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -59,7 +59,9 @@ pub fn walk<R: Read + Seek>(mut input: R, name: &str, v: &mut dyn Visitor, cance
         Ok(())
     } else if is_lz4(name) {
         if v.wants(name) {
-            v.visit(name, None, &mut input)?;
+            let size = input.seek(SeekFrom::End(0))?;
+            input.seek(SeekFrom::Start(0))?;
+            v.visit(name, Some(size), &mut input)?;
         }
         Ok(())
     } else {
